@@ -4,18 +4,20 @@ import java.util.Scanner;
 
 public class GuessingGame {
 
-    final static int randomNum = createRandomNumber();
+    static int randomNum = createRandomNumber();
+    static int numGuess = 0;
     static boolean winCondition = false;
     static boolean quitCondition = false;
     static int attempts = 0;
     static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
-        while (!winCondition || !quitCondition) {
+        while (!winCondition && !quitCondition) {
             int userGuess = getUserGuess();
             didYouWin(userGuess);
         }
         System.out.println("Goodbye!");
+        scan.close();
     }
 
     public static final int createRandomNumber() {
@@ -25,19 +27,20 @@ public class GuessingGame {
     }
 
     public static int getUserGuess() {
-        int numGuess = 0;
 
         System.out.println("--- --- ---");
         System.out.println("Guess a number between 1 and 100");
         System.out.println("The correct answer is " + randomNum);
 
-        if (attempts > 0) {
-            System.out.println("This is attempt #" + attempts);
+        if (attempts == 4) {
+            System.out.println("This is your last attempt!");
+        } else if (attempts > 0) {
+            System.out.println("You have " + (5 - attempts) + " attempts left");
         }
 
         String guess = scan.next(); // Intakes String
 
-        if (guess == "Quit") { // Test if string entered is Quit
+        if (guess.equals("Quit")) { // Test if string entered is Quit
             System.out.println("See you next time!");
             quitCondition = true; // Should break out of our main() while loop
         } else {
@@ -60,15 +63,17 @@ public class GuessingGame {
     public static void didYouWin(int guess) {
         if (guess == randomNum) {
             System.out.println("Congrats, you win!");
-            scan.close();
             winCondition = true;
-        } else if (guess > randomNum) {
+        } else {
             attempts += 1;
-
-            System.out.println("Sorry, your guess is too high. Try again.");
-        } else if (guess < randomNum) {
-            attempts += 1;
-            System.out.println("Sorry, your guess is too low. Try again.");
+            if (attempts == 5) {
+                System.out.println("You didn't guess the right number in time.\nYou lost!");
+                quitCondition = true;
+            } else if (guess > randomNum) {
+                System.out.println("Sorry, your guess is too high. Try again.");
+            } else if (guess < randomNum) {
+                System.out.println("Sorry, your guess is too low. Try again.");
+            }
         }
     }
 
@@ -78,6 +83,24 @@ public class GuessingGame {
         } else {
             return false;
         }
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int i) {
+        attempts = i;
+    }
+
+    public int setRandomNum(int i) {
+        randomNum = i;
+        return randomNum;
+    }
+
+    public int setNumGuess(int i) {
+        numGuess = i;
+        return numGuess;
     }
 
 }
